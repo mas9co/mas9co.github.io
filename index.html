@@ -529,7 +529,7 @@
 			const data = {
 				name: name,
 				message: message || "未填留言內容",
-				time: Date.now(),
+				time: firebase.database.ServerValue.TIMESTAMP,
 				opened: false,
 				archived: false,
 				pinned: false
