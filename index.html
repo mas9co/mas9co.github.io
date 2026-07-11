@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>˚✧₊⁎. sᴇʀᴠɪᴄᴇ ʙᴇʟʟ .⁎₊✧˚</title>
+
+	<style>
+		:root{
+			--bg-color:#D1CFFF;
+			--dot-color:#ffffff;
+			--box-bg:rgba(255,255,255,.52);
+			--accent-purple:#b278ff;
+			--divider-color:#d1c2ff;
+			--title-shadow:#7c30ff;
+			--highlight-white:#ffffff;
+			--hover-bg:#bdb3ff;
+			--btn-text-normal:#bdb3ff;
+			--label-bg:rgba(179,162,231,.25);
+			--text-purple:#8f65d8;
+		}
+
+		*{
+			box-sizing:border-box;
+		}
+
+		body{
+			margin:0;
+			padding:180px 18px 50px;
+			min-height:100vh;
+			font-family:"Microsoft JhengHei",sans-serif;
+			background-color:var(--bg-color);
+			background-image:
+				radial-gradient(var(--dot-color) 12%, transparent 12%),
+				radial-gradient(var(--dot-color) 12%, transparent 12%);
+			background-position:0 0,15px 15px;
+			background-size:30px 30px,30px 30px;
+			background-repeat:repeat,repeat;
+			background-attachment:fixed,fixed;
+			display:flex;
+			flex-direction:column;
+			align-items:center;
+			justify-content:flex-start;
+		}
+
+		body::before,
+		body::after{
+			content:"";
+			position:fixed;
+			left:0;
+			width:100%;
+			height:20px;
+			z-index:9999;
+			pointer-events:none;
+			background-repeat:repeat-x;
+			background-size:30px 20px;
+		}
+
+		body::before{
+			top:0;
+			background-image:
+				radial-gradient(
+					circle at 15px -5px,
+					rgba(255,255,255,.7) 20px,
+					transparent 21px
+				);
+		}
+
+		body::after{
+			bottom:0;
+			background-image:
+				radial-gradient(
+					circle at 15px calc(100% + 5px),
+					rgba(255,255,255,.7) 20px,
+					transparent 21px
+				);
+		}
+
+		.info-box{
+			width:min(460px,100%);
+			background-color:var(--box-bg);
+			backdrop-filter:blur(6px);
+			-webkit-backdrop-filter:blur(6px);
+			border:1.2px solid var(--accent-purple);
+			border-radius:25px;
+			padding:34px 36px 30px;
+			text-align:center;
+			box-shadow:0 8px 20px rgba(124,48,255,.12);
+		}
+
+		.title{
+			font-size:1.1rem;
+			font-weight:900;
+			margin-bottom:6px;
+			color:var(--highlight-white);
+			text-shadow:
+				0 0 4px var(--title-shadow),
+				0 0 4px var(--title-shadow);
+		}
+
+		.subtitle{
+			font-size:.78rem;
+			color:#cbc2ff;
+			font-family:Consolas,monospace;
+			margin-bottom:25px;
+			transition:all 1.5s;
+		}
+
+		.subtitle:hover{
+			color:var(--accent-purple);
+			transition:all .25s;
+		}
+
+		.divider{
+			border-top:1.5px dashed var(--divider-color);
+			margin:15px auto;
+			width:100%;
+		}
+
+		.form-group{
+			text-align:left;
+			margin-bottom:18px;
+		}
+
+		label{
+			display:inline-block;
+			color:var(--accent-purple);
+			background-color:var(--label-bg);
+			padding:2px 12px;
+			font-size:.82rem;
+			font-weight:bold;
+			margin-bottom:8px;
+			font-family:Consolas,"Microsoft JhengHei",sans-serif;
+		}
+
+		input,
+		textarea{
+			width:100%;
+			border:1.2px solid var(--divider-color);
+			border-radius:15px;
+			background:rgba(255,255,255,.68);
+			padding:12px 14px;
+			font-family:"Microsoft JhengHei",sans-serif;
+			font-size:.92rem;
+			color:#6f4bb8;
+			outline:none;
+			box-shadow:inset 0 1px 4px rgba(124,48,255,.08);
+		}
+
+		input:focus,
+		textarea:focus{
+			border-color:var(--accent-purple);
+			box-shadow:
+				0 0 0 3px rgba(178,120,255,.15),
+				inset 0 1px 4px rgba(124,48,255,.08);
+			transition:all .25s;
+		}
+
+		textarea{
+			min-height:130px;
+			resize:vertical;
+			line-height:1.6;
+			margin-bottom:20px;
+		}
+
+		input::placeholder,
+		textarea::placeholder{
+			color:transparent;
+			transition:all 1.3s;
+		text-align:center;
+		}
+
+		input:hover::placeholder,
+		textarea:hover::placeholder,
+		input:focus::placeholder,
+		textarea:focus::placeholder{
+			color:#b29be0;
+			transition:all .55s;
+		text-align:center;
+		}
+
+		#status{
+			display:block;
+			width:85%;
+			max-width:340px;
+			max-height:0;
+
+			margin:0 auto;
+			padding:0 14px;
+
+			opacity:0;
+			visibility:hidden;
+			transform:translateY(8px);
+			overflow:hidden;
+
+			border-radius:16px;
+			background:rgba(255,255,255,.5);
+			border:1.5px dashed var(--hover-bg);
+
+			color:var(--text-purple);
+			font-size:.82rem;
+			line-height:1.7;
+			text-align:center;
+			white-space:pre-line;
+
+			transition:
+				opacity .35s ease,
+				transform .35s ease,
+				visibility .35s,
+				max-height .35s ease,
+				margin .35s ease,
+				padding .35s ease;
+
+			pointer-events:none;
+		}
+
+		#status.show{
+			opacity:1;
+			visibility:visible;
+			transform:translateY(0);
+
+			max-height:140px;
+			margin:0 auto 18px;
+			padding:12px 14px;
+		}
+
+		.send-btn{
+			width:100%;
+			margin-top:0px;
+			border:1.5px solid var(--highlight-white);
+			border-radius:50px;
+			background-color:var(--hover-bg);
+			color:var(--highlight-white);
+			padding:12px 25px;
+			font-size:.92rem;
+			font-weight:bold;
+			cursor:pointer;
+			transition:all .25s;
+		}
+
+		.send-btn:hover{
+			background-color:var(--box-bg);
+			color:var(--btn-text-normal);
+			transform:translateY(-2px);
+		}
+
+		.send-btn:disabled{
+			opacity:.6;
+			cursor:not-allowed;
+			transform:none;
+		}
+
+		.home-btn{
+			margin-top:80px;
+			display:inline-block;
+			background-color:var(--box-bg);
+			border:1.5px solid var(--highlight-white);
+			border-radius:50px;
+			padding:10px 25px;
+			color:var(--btn-text-normal) !important;
+			text-decoration:none;
+			font-size:.85rem;
+			font-weight:bold;
+			transition:all .3s;
+		}
+
+		.home-btn:hover{
+			background-color:var(--hover-bg);
+			color:var(--highlight-white) !important;
+			transform:translateY(-2px);
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="info-box">
+
+		<div class="title">有事找我嗎?</div>
+
+		<div class="divider"></div>
+
+		<div class="subtitle">
+			在這邊留言給我，
+			會在我的畫面上出現通知。
+		</div>
+
+		<div class="form-group">
+			<label for="name">Name</label>
+
+			<input
+				id="name"
+				type="text"
+				maxlength="30"
+				autocomplete="nickname"
+				placeholder="請填入你的暱稱（最多30字┆不會顯示在通知上）">
+		</div>
+
+		<div class="form-group">
+			<label for="message">Message</label>
+
+			<textarea
+				id="message"
+				maxlength="500"
+				placeholder="可以在這裡填入找我的原因（空白也可以）
+留言只會顯示在我的收件匣裡 ⇢ 不會顯示在畫面上
+--------------------------------------------------
+※ 只能輸入純文字┆最多可以輸入500字 ※"></textarea>
+		</div>
+
+		<p id="status" role="status" aria-live="polite"></p>
+
+		<button
+			id="sendButton"
+			class="send-btn"
+			type="button"
+			onclick="sendNotify()">
+			💌 傳送通知
+		</button>
+
+	</div>
+
+	<a href="https://piku.page/@Mas9" class="home-btn">
+		回首頁
+	</a>
+
+	<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-database-compat.js"></script>
+
+	<script>
+		const firebaseConfig = {
+			apiKey: "AIzaSyDVE6opN2HYMg4phLHU1xFq3cV5jemAFVI",
+			authDomain: "obs-service-bell.firebaseapp.com",
+			databaseURL: "https://obs-service-bell-default-rtdb.asia-southeast1.firebasedatabase.app",
+			projectId: "obs-service-bell",
+			storageBucket: "obs-service-bell.firebasestorage.app",
+			messagingSenderId: "911228895267",
+			appId: "1:911228895267:web:a3457b6c7fcfd5849eb196"
+		};
+
+		firebase.initializeApp(firebaseConfig);
+
+		const database = firebase.database();
+
+		const nicknameStorageKey = "mas9ServiceBellNickname";
+
+		const savedNickname = localStorage.getItem(nicknameStorageKey);
+
+		if(savedNickname){
+			document.getElementById("name").value = savedNickname;
+		}
+
+		let isCoolingDown = false;
+		let cooldownTimer = null;
+		let statusTimer = null;
+
+		function showStatus(message, duration = 3000){
+			const status = document.getElementById("status");
+
+			clearTimeout(statusTimer);
+
+			status.classList.remove("show");
+
+			void status.offsetWidth;
+
+			/*
+				使用 textContent，確保提示訊息只會被當成純文字，
+				不會被瀏覽器解讀成 HTML。
+			*/
+			status.textContent = message;
+
+			requestAnimationFrame(function(){
+				status.classList.add("show");
+			});
+
+			statusTimer = setTimeout(function(){
+				status.classList.remove("show");
+			}, duration);
+		}
+
+		function isValidNickname(name){
+			const normalizedName = name.trim();
+			const lowerName = normalizedName.toLocaleLowerCase();
+
+			/*
+				暱稱長度需介於 2～30 個字元。
+			*/
+			if(normalizedName.length < 2 || normalizedName.length > 30){
+				return false;
+			}
+
+			/*
+				常見無意義暱稱黑名單。
+			*/
+			const blacklist = [
+				"暱稱",
+				"名字",
+				"名稱",
+				"姓名",
+				"匿名",
+				"無",
+				"沒有",
+				"name",
+				"nickname",
+				"test",
+				"guest",
+				"unknown",
+				"none",
+				"ニックネーム",
+				"名前",
+				"匿名",
+				"닉네임",
+				"이름",
+				"익명"
+			];
+
+			if(blacklist.includes(lowerName)){
+				return false;
+			}
+
+			/*
+				不允許暱稱全部都是數字，例如：
+				000、123、9999。
+			*/
+			if(/^\p{N}+$/u.test(normalizedName)){
+				return false;
+			}
+
+			/*
+				不允許全部由相同字元重複組成，例如：
+				aaa、ㅋㅋㅋ、あああ、哈哈哈。
+			*/
+			if(/^(.)\1+$/u.test(normalizedName)){
+				return false;
+			}
+
+			/*
+				不允許全部都是符號。
+			*/
+			if(/^[^\p{L}\p{N}]+$/u.test(normalizedName)){
+				return false;
+			}
+
+			/*
+				允許：
+				中文、英文、日文、韓文、數字、
+				空格、底線、連字號、句點。
+			*/
+			const allowedNicknamePattern =
+				/^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}A-Za-z0-9 _.-]+$/u;
+
+			if(!allowedNicknamePattern.test(normalizedName)){
+				return false;
+			}
+
+			return true;
+		}
+
+		function containsForbiddenContent(text){
+
+			const codePatterns = [
+
+				// HTML 標籤
+				/<\/?[a-z][^>]*>/i,
+
+				// JavaScript
+				/\b(?:function|const|let|var|class|import|export)\s+[A-Za-z_$]/i,
+
+				// SQL
+				/\b(?:SELECT|INSERT|UPDATE|DELETE|DROP|CREATE)\s+(?:FROM|INTO|TABLE|DATABASE|SET)\b/i,
+
+				// 常見 XSS
+				/\b(?:eval|document\.write|innerHTML|javascript:)\b/i,
+
+				// JS 語法
+				/(?:=>|&&|\|\||===|!==)/,
+
+				/[{}]\s*;/
+			];
+
+			return codePatterns.some(function(pattern){
+				return pattern.test(text);
+			});
+		}
+
+		function sendNotify(){
+			const nameInput = document.getElementById("name");
+			const messageInput = document.getElementById("message");
+			const sendButton = document.getElementById("sendButton");
+
+			const name = nameInput.value.trim();
+			const message = messageInput.value.trim();
+
+			if(isCoolingDown){
+				showStatus("請等待冷卻時間結束後才能再次寄送。");
+				return;
+			}
+
+			// 沒有輸入暱稱
+			if(!name){
+				showStatus("請輸入暱稱。");
+				nameInput.focus();
+				return;
+			}
+
+			// 有輸入，但不符合規則
+			if(!isValidNickname(name)){
+				showStatus("請輸入有意義的暱稱。");
+				nameInput.focus();
+				return;
+			}
+
+			// 留言長度限制
+			if(message.length > 500){
+				showStatus("留言最多只能輸入500字。");
+				messageInput.focus();
+				return;
+			}
+
+			// 檢查 HTML / 程式碼
+			if(
+				containsForbiddenContent(name) ||
+				containsForbiddenContent(message)
+			){
+				showStatus("留言內容只可以輸入純文字。");
+				return;
+			}
+
+			const data = {
+				name: name,
+				message: message || "未填留言內容",
+				time: Date.now(),
+				opened: false,
+				archived: false,
+				pinned: false
+			};
+
+			showStatus("送出中...", 30000);
+
+			sendButton.disabled = true;
+
+			database.ref("serviceBell/inbox").push(data)
+				.then(function(){
+
+					localStorage.setItem(nicknameStorageKey, name);
+
+					showStatus("已成功送出留言～\n在我打開虛擬相機時 我才會看到通知喔 🔔", 10000);
+
+					messageInput.value = "";
+
+					startCooldown(60);
+				})
+				.catch(function(error){
+
+					showStatus("⚠️ 送出失敗 ⚠️：" + error.message, 3000);
+
+					sendButton.disabled = false;
+					sendButton.textContent = "傳送通知 💌";
+				});
+		}
+
+		function startCooldown(seconds){
+			const sendButton = document.getElementById("sendButton");
+
+			isCoolingDown = true;
+
+			let remaining = seconds;
+
+			sendButton.disabled = true;
+			sendButton.textContent = "請稍等 " + remaining + " 秒後．才能再次傳送";
+
+			clearInterval(cooldownTimer);
+
+			cooldownTimer = setInterval(function(){
+				remaining--;
+
+				if(remaining > 0){
+					sendButton.textContent =
+						"請稍等 " + remaining + " 秒後．才能再次傳送";
+				}else{
+					clearInterval(cooldownTimer);
+
+					isCoolingDown = false;
+
+					sendButton.disabled = false;
+					sendButton.textContent = "傳送通知 💌";
+				}
+			}, 1000);
+		}
+	</script>
+
+</body>
+</html>
