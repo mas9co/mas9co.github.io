@@ -106,8 +106,7 @@
 	}
 
 	function hasCurrentPlayer(){
-		const player = getCurrentPlayer();
-		return Boolean(player && currentUser && player.ownerUid === currentUser.uid);
+		return Boolean(getCurrentPlayer());
 	}
 
 	function renderHeader(){
@@ -150,9 +149,9 @@
 
 		const requests = Object.values(currentServer.restartRequests || {});
 		const requested = Boolean(
-			currentUser &&
+			currentName &&
 			currentServer.restartRequests &&
-			currentServer.restartRequests[currentUser.uid]
+			currentServer.restartRequests[getPlayerKey(currentName)]
 		);
 
 		let cardsHtml = "";
@@ -162,8 +161,9 @@
 			cardsHtml = players
 				.sort((a,b) => a[1].displayName.localeCompare(b[1].displayName,"zh-Hant"))
 				.map(function(entry){
+					const playerKey = entry[0];
 					const player = entry[1];
-					const isMe = Boolean(currentUser && player.ownerUid === currentUser.uid);
+					const isMe = Boolean(currentName && playerKey === getPlayerKey(currentName));
 					const active = player.status === "active";
 					return `
 						<article class="player-card ${active ? "" : "inactive"} ${isMe ? "me" : ""}">
@@ -287,24 +287,18 @@
 			const snapshot = await playerRef.once("value");
 			const updates = {};
 			if(snapshot.exists()){
-				const existing = snapshot.val();
-				if(existing.ownerUid && existing.ownerUid !== currentUser.uid){
-					throw new Error("這個名字已經有人使用，請換一個名字。");
-				}
 				updates[`${APP_ROOT}/servers/${currentServerId}/players/${key}/displayName`] = name;
-				updates[`${APP_ROOT}/servers/${currentServerId}/players/${key}/ownerUid`] = currentUser.uid;
+				updates[`${APP_ROOT}/servers/${currentServerId}/players/${key}/ownerUid`] = null;
 				updates[`${APP_ROOT}/servers/${currentServerId}/players/${key}/updatedAt`] = firebase.database.ServerValue.TIMESTAMP;
 				updates[`${APP_ROOT}/servers/${currentServerId}/players/${key}/changedBy`] = "player";
 			}else{
 				updates[`${APP_ROOT}/servers/${currentServerId}/players/${key}`] = {
 					displayName:name,
 					status:"active",
-					ownerUid:currentUser.uid,
 					updatedAt:firebase.database.ServerValue.TIMESTAMP,
 					changedBy:"player"
 				};
 			}
-			updates[`${APP_ROOT}/servers/${currentServerId}/memberships/${currentUser.uid}`] = key;
 			await database.ref().update(updates);
 			saveCurrentServerLogin(name);
 			showStatus("已加入／讀取資料。");
@@ -351,17 +345,17 @@
 			updates[`${APP_ROOT}/servers/${currentServerId}/players/${newKey}`] = {
 				displayName:newName,
 				status:oldPlayer.status || "active",
-				ownerUid:currentUser.uid,
 				updatedAt:firebase.database.ServerValue.TIMESTAMP,
 				changedBy:"player"
 			};
-			updates[`${APP_ROOT}/servers/${currentServerId}/memberships/${currentUser.uid}`] = newKey;
 
-			const oldRequest = currentServer.restartRequests && currentServer.restartRequests[currentUser.uid];
+			const oldRequest = currentServer.restartRequests && currentServer.restartRequests[oldKey];
 			if(oldRequest){
-				updates[`${APP_ROOT}/servers/${currentServerId}/restartRequests/${currentUser.uid}/displayName`] = newName;
-				updates[`${APP_ROOT}/servers/${currentServerId}/restartRequests/${currentUser.uid}/requestedAt`] =
-					firebase.database.ServerValue.TIMESTAMP;
+				updates[`${APP_ROOT}/servers/${currentServerId}/restartRequests/${oldKey}`] = null;
+				updates[`${APP_ROOT}/servers/${currentServerId}/restartRequests/${newKey}`] = {
+					displayName:newName,
+					requestedAt:firebase.database.ServerValue.TIMESTAMP
+				};
 			}
 
 			await database.ref().update(updates);
@@ -377,7 +371,7 @@
 		nameInput.value = "";
 		renderHeader();
 		renderServer();
-		showStatus("已從目前伺服器登出。Firebase 匿名身分仍保留，以保護資料擁有權。");
+		showStatus("已從目前伺服器登出。下次輸入同一個名字，就能繼續修改該名字的資料。");
 		nameInput.focus();
 	}
 
@@ -389,7 +383,6 @@
 		try{
 			await database.ref(`${APP_ROOT}/servers/${currentServerId}/players/${key}`).update({
 				status:nextStatus,
-				ownerUid:currentUser.uid,
 				updatedAt:firebase.database.ServerValue.TIMESTAMP,
 				changedBy:"player"
 			});
@@ -409,8 +402,9 @@
 		}
 		if(!canAct()) return;
 
+		const requestKey = getPlayerKey(currentName);
 		const requestRef = database.ref(
-			`${APP_ROOT}/servers/${currentServerId}/restartRequests/${currentUser.uid}`
+			`${APP_ROOT}/servers/${currentServerId}/restartRequests/${requestKey}`
 		);
 		try{
 			const snapshot = await requestRef.once("value");
@@ -419,7 +413,6 @@
 			}else{
 				await requestRef.set({
 					displayName:currentName,
-					ownerUid:currentUser.uid,
 					requestedAt:firebase.database.ServerValue.TIMESTAMP
 				});
 			}
