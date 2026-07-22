@@ -69,13 +69,25 @@
 		return name.trim().replace(/\s+/g," ").toLocaleLowerCase("zh-Hant");
 	}
 
+	let statusTimer = null;
+
 	function showStatus(message){
+		clearTimeout(statusTimer);
 		statusMessage.textContent = message;
+		statusMessage.classList.remove("fade-out");
 		statusMessage.classList.add("show");
+
+		statusTimer = setTimeout(function(){
+			statusMessage.classList.add("fade-out");
+			setTimeout(function(){
+				statusMessage.classList.remove("show","fade-out");
+			},400);
+		},2200);
 	}
 
 	function hideStatus(){
-		statusMessage.classList.remove("show");
+		clearTimeout(statusTimer);
+		statusMessage.classList.remove("show","fade-out");
 	}
 
 	function canAct(){
@@ -117,10 +129,10 @@
 		userButton.classList.toggle("logged-in",loggedIn);
 
 		if(!loggedIn){
-			mainButton.textContent = "加入／讀取資料";
+			mainButton.textContent = "登記 / 讀取";
 			mainButton.dataset.action = "join";
 		}else if(hasCurrentPlayer()){
-			mainButton.textContent = "變更現在登入的名字";
+			mainButton.textContent = "變更暱稱";
 			mainButton.dataset.action = "rename";
 		}else{
 			mainButton.textContent = "加入這個伺服器";
@@ -144,7 +156,7 @@
 		playersSection.classList.toggle("server-closed",offline);
 		serverStatusText.textContent = offline ? "伺服器目前已關閉🟣" : "伺服器目前開放中🟢";
 		summaryText.textContent = players.length
-			? activeCount + " / " + players.length + " 人仍有遊玩需求"
+			? activeCount + " 人仍有遊玩需求"
 			: "尚無玩家登記";
 
 		const requests = Object.values(currentServer.restartRequests || {});
@@ -170,7 +182,7 @@
 							<div class="player-name">${escapeHtml(player.displayName)}${isMe ? "（你）" : ""}</div>
 							<div class="player-card-divider"></div>
 							<div class="player-state ${active ? "active-text" : "inactive-text"}">
-								${active ? "還會繼續玩" : "暫時不玩"}
+								${active ? "還會繼續玩" : "暫時不玩了"}
 							</div>
 							<div class="player-meta">最後確認：${formatTime(player.updatedAt)}</div>
 							${isMe ? `
@@ -301,8 +313,8 @@
 			}
 			await database.ref().update(updates);
 			saveCurrentServerLogin(name);
+			renderServer();
 			showStatus("已加入／讀取資料。");
-			renderHeader();
 		}catch(error){
 			showStatus("加入失敗：" + error.message);
 		}
@@ -360,6 +372,7 @@
 
 			await database.ref().update(updates);
 			saveCurrentServerLogin(newName);
+			renderServer();
 			showStatus("名字已變更。");
 		}catch(error){
 			showStatus("變更名字失敗：" + error.message);

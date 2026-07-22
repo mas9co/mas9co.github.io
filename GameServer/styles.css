@@ -100,6 +100,7 @@ button,input,select{font:inherit}
 	color:var(--highlight-white);
 	font-size:1.25rem;
 	font-weight:400;
+	letter-spacing:1.5px;
 	text-shadow:
 		0 0 4px var(--title-shadow),
 		0 0 6px var(--title-shadow),
@@ -139,10 +140,16 @@ button,input,select{font:inherit}
 }
 
 .subtitle{
-	margin-bottom:22px;
+	margin-bottom:35px;
 	color:var(--text-blue);
 	font-size:.82rem;
 	line-height:1.8;
+	opacity:.30;
+	transition:opacity .35s ease;
+}
+
+.subtitle:hover{
+	opacity:1;
 }
 
 .form-grid{
@@ -219,11 +226,11 @@ input:focus,select:focus{
 .section-title{
 	color:white;
 	font-size:1rem;
-	font-weight:400;
+	letter-spacing:1.5px;
 	text-shadow:
+		0 0 2px var(--title-shadow),
 		0 0 4px var(--title-shadow),
-		0 0 6px var(--title-shadow),
-		0 0 10px var(--title-shadow);
+		0 0 6px var(--title-shadow);
 }
 
 .player-grid{
@@ -311,9 +318,21 @@ input:focus,select:focus{
 	font-size:.82rem;
 	line-height:1.7;
 	white-space:pre-line;
+	opacity:0;
+	transform:translateY(-4px);
+	transition:opacity .4s ease,transform .4s ease;
 }
 
-.status-message.show{display:block}
+.status-message.show{
+	display:block;
+	opacity:1;
+	transform:translateY(0);
+}
+
+.status-message.show.fade-out{
+	opacity:0;
+	transform:translateY(-4px);
+}
 
 .restart-box{
 	text-align:center;
@@ -393,6 +412,10 @@ input:focus,select:focus{
 	width:100%;
 	margin:13px 0 10px;
 	border-top:1.5px dashed var(--divider-color);
+}
+
+.player-card.inactive .player-card-divider{
+	border-top-color:rgba(255,255,255,.9);
 }
 
 .player-state.active-text{
