@@ -214,8 +214,20 @@
 		renderHeader();
 	}
 
+
+	function getServerCreatedTime(serverId, server){
+		if(server && Number.isFinite(Number(server.createdAt))){
+			return Number(server.createdAt);
+		}
+
+		const match = String(serverId).match(/-(\d+)$/);
+		return match ? Number(match[1]) : 0;
+	}
+
 	function renderServerSelect(){
-		const entries = Object.entries(servers);
+		const entries = Object.entries(servers).sort((a, b) => {
+			return getServerCreatedTime(b[0], b[1]) - getServerCreatedTime(a[0], a[1]);
+		});
 		serverSelect.innerHTML = entries
 			.map((entry) => `<option value="${escapeHtml(entry[0])}">${escapeHtml(entry[1].name)}</option>`)
 			.join("");
