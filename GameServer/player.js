@@ -135,7 +135,7 @@
 			mainButton.textContent = "變更暱稱";
 			mainButton.dataset.action = "rename";
 		}else{
-			mainButton.textContent = "加入這個伺服器";
+			mainButton.textContent = "在此伺服器登記資料";
 			mainButton.dataset.action = "join";
 		}
 	}
@@ -145,7 +145,7 @@
 			playersSection.classList.remove("server-closed");
 			serverStatusText.textContent = "尚未選擇伺服器";
 			summaryText.textContent = "";
-			playerGrid.innerHTML = '<div class="empty">目前沒有可顯示的伺服器。</div>';
+			playerGrid.innerHTML = '<div class="empty">目前沒有可顯示的遊戲伺服器。</div>';
 			renderHeader();
 			return;
 		}
@@ -156,7 +156,7 @@
 		playersSection.classList.toggle("server-closed",offline);
 		serverStatusText.textContent = offline ? "伺服器目前已關閉🟣" : "伺服器目前開放中🟢";
 		summaryText.textContent = players.length
-			? activeCount + " 人仍有遊玩需求"
+			? activeCount + " 人有遊玩需求"
 			: "尚無玩家登記";
 
 		const requests = Object.values(currentServer.restartRequests || {});
@@ -179,7 +179,7 @@
 					const active = player.status === "active";
 					return `
 						<article class="player-card ${active ? "" : "inactive"} ${isMe ? "me" : ""}">
-							<div class="player-name">${escapeHtml(player.displayName)}${isMe ? "（你）" : ""}</div>
+							<div class="player-name">${escapeHtml(player.displayName)}${isMe ? " (你)" : ""}</div>
 							<div class="player-card-divider"></div>
 							<div class="player-state ${active ? "active-text" : "inactive-text"}">
 								${active ? "還會繼續玩" : "暫時不玩了"}
@@ -278,7 +278,7 @@
 	async function loginOrJoin(){
 		const name = nameInput.value.trim().replace(/\s+/g," ");
 		if(!currentUser){
-			showStatus("Firebase 身分驗證尚未完成，請稍候。");
+			showStatus("資料庫身分驗證尚未完成，請稍候。");
 			return;
 		}
 		if(!name){
@@ -384,7 +384,7 @@
 		nameInput.value = "";
 		renderHeader();
 		renderServer();
-		showStatus("已從目前伺服器登出。下次輸入同一個名字，就能繼續修改該名字的資料。");
+		showStatus("已從目前伺服器登出（下次輸入同一個名字，就能繼續修改你的資料）");
 		nameInput.focus();
 	}
 
