@@ -18,17 +18,36 @@
 
 *{box-sizing:border-box}
 
-body{
-	margin:0;
-	min-height:100vh;
-	padding:100px 18px 80px;
-	font-family:"Microsoft JhengHei",sans-serif;
+html{
+	min-height:100%;
 	background-color:var(--bg-color);
+}
+
+/* 獨立水玉背景層：只顯示在上下蕾絲之間，不會遮住任何頁面元素 */
+html::before{
+	content:"";
+	position:fixed;
+	top:20px;
+	right:0;
+	bottom:20px;
+	left:0;
+	z-index:0;
+	pointer-events:none;
 	background-image:
 		radial-gradient(var(--dot-color) 12%,transparent 12%),
 		radial-gradient(var(--dot-color) 12%,transparent 12%);
 	background-position:0 0,15px 15px;
 	background-size:30px 30px,30px 30px;
+}
+
+body{
+	position:relative;
+	z-index:1;
+	margin:0;
+	min-height:100vh;
+	padding:100px 18px 80px;
+	font-family:"Microsoft JhengHei",sans-serif;
+	background:transparent;
 	display:flex;
 	justify-content:center;
 }
@@ -39,10 +58,9 @@ body::after{
 	position:fixed;
 	left:0;
 	width:100%;
-	height:20px; /* 蕾絲 20px＋額外留白，遮住這個範圍內的背景點點 */
+	height:20px; /* 只保留蕾絲本身高度，不建立額外遮罩 */
 	z-index:9999;
 	pointer-events:none;
-	background-color:var(--bg-color); /* 避免點點透過蕾絲透明區域顯示 */
 	background-repeat:repeat-x;
 	background-size:30px 20px;
 }
