@@ -405,26 +405,55 @@ input:focus,select:focus{
 }
 
 @media(max-width:720px){
-	body{padding-top:140px}
-
-	.info-box{padding:25px 22px}
-
-	.top-row{
-		grid-template-columns:1fr;
-		justify-items:center;
+	body{
+		padding-top:140px;
 	}
 
-	.server-summary{text-align:center}
+	.info-box{
+		padding:25px 22px;
+	}
 
-	.user-button{justify-self:center}
+	.top-row{
+		display:flex;
+		flex-direction:column;
+		align-items:center;
+		gap:0;
+	}
 
-	.form-grid{grid-template-columns:1fr}
+	/* 第一行：登入按鈕 */
+	.user-button{
+		order:1;
+		align-self:center;
+		margin-bottom:28px;
+	}
 
-	.admin-row{grid-template-columns:1fr}
+	/* 第二行：網站標題 */
+	.title{
+		order:2;
+		margin-bottom:22px;
+		text-align:center;
+		white-space:normal;
+	}
 
-	.admin-toolbar{justify-content:center}
+	/* 第三、四行：伺服器狀態與需求人數 */
+	.server-summary{
+		order:3;
+		text-align:center;
+		line-height:1.8;
+	}
+
+	.form-grid{
+		grid-template-columns:1fr;
+	}
+
+	.admin-row{
+		grid-template-columns:1fr;
+	}
+
+	.admin-toolbar{
+		justify-content:center;
+	}
 }
-
 
 .player-card-divider{
 	width:100%;
