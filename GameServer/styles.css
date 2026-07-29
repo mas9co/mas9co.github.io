@@ -38,6 +38,8 @@ html::before{
 		radial-gradient(var(--dot-color) 12%,transparent 12%);
 	background-position:0 0,15px 15px;
 	background-size:30px 30px,30px 30px;
+	background-repeat:repeat,repeat;
+	background-attachment:fixed,fixed;
 }
 
 body{
