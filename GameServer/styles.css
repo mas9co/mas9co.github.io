@@ -592,6 +592,12 @@ input:focus,select:focus{
 	text-shadow:0 1px 3px rgba(0,0,0,.3);
 }
 
+.players-section.server-closed .player-name{
+	color:transparent;
+	text-shadow:rgba(60,65,75,.8) 0 0 5px;
+	user-select:none;
+}
+
 /* 管理頁：重新開放請求合併至伺服器設定 */
 .server-request-inline{
 	margin-top:18px;
